@@ -16,15 +16,8 @@ typedef char card_t;
 char suit_sign[] = "SHDC";
 char rank_sign[] = "AKQJT98765432";
 char *seat_sign[] = { "North", "South", "West", "East" };
-//float point_table[SUIT_SIZE] = {4.5,3,1.5,1,0.5,0,0,0,0,0,0,0,0};
-#if 0
-float point_table[SUIT_SIZE] = {1.5,1,.5,0,0,0,0,0,0,0,0,0,0};
-float dp_table[SUIT_SIZE]  = {0,0,0,0,1,2,3,4,5,6,7,8,9};
-#else
 float point_table[SUIT_SIZE] = {4,3,2,1,0,0,0,0,0,0,0,0,0};
 float dp_table[SUIT_SIZE] = {3,2,1,0,0,0,0,0,0,0,0,0,0};
-#endif
-float dp_table2[SUIT_SIZE] = {0,0,0,0,0,0,0,0,0,0,0,0,0};
 
 struct {
     int  offset;
@@ -211,7 +204,7 @@ main(int argc, char *argv[])
     big_t index[4], total[4];
     int hands_to_show, arg_pos;
     int seat, suit, suit_len;
-    float hcp[4], dp[4], dp2[4];
+    float hcp[4], dp[4];
 
     {
         struct timeval time;
@@ -262,16 +255,11 @@ main(int argc, char *argv[])
     for (seat = 0; seat < 4; seat++) {
         hcp[seat] = calculate_hcp(hand[seat], HAND_SIZE);
         dp[seat]  = calculate_dp(hand[seat], HAND_SIZE, dp_table);
-        dp2[seat] = calculate_dp(hand[seat], HAND_SIZE, dp_table2);
     }
 
     if (hands_to_show >= 2) {
         space(20);
-        if (dp2[1])
-            printf("North: %g + %g,%g = %g,%g\n",
-                    hcp[1], dp[1], dp2[1], hcp[1] + dp[1], hcp[1] + dp2[1]);
-        else
-            printf("North: %g + %g = %g\n", hcp[1], dp[1], hcp[1] + dp[1]);
+        printf("North: %g + %g = %g\n", hcp[1], dp[1], hcp[1] + dp[1]);
         for (suit = 0; suit < 4; suit ++) {
             space(20);
             suit_show(hand[1], HAND_SIZE, suit);
@@ -281,18 +269,10 @@ main(int argc, char *argv[])
 
     if (hands_to_show >= 4) {
         char out[80];
-        if (dp2[3])
-            sprintf(out, "West: %g + %g,%g = %g,%g",
-                    hcp[3], dp[3], dp2[3], hcp[3] + dp[3], hcp[3] +dp2[3]);
-        else
-            sprintf(out, "West: %g + %g = %g", hcp[3], dp[3], hcp[3] + dp[3]);
+        sprintf(out, "West: %g + %g = %g", hcp[3], dp[3], hcp[3] + dp[3]);
         printf("%s", out);
         space(40 - strlen(out));
-        if (dp2[2])
-            printf("East: %g + %g,%g = %g,%g\n",
-                    hcp[2], dp[2], dp2[2], hcp[2] + dp[2], hcp[2] +dp2[2]);
-        else
-            printf("East: %g + %g = %g\n", hcp[2], dp[2], hcp[2] + dp[2]);
+        printf("East: %g + %g = %g\n", hcp[2], dp[2], hcp[2] + dp[2]);
         for (suit=0; suit<4; suit++) {
             suit_len = suit_show(hand[3], HAND_SIZE, suit);
             space(center[suit].offset - suit_len);
@@ -307,11 +287,7 @@ main(int argc, char *argv[])
     if (hands_to_show >= 2)
         printf("\n");
     space(20);
-    if (dp2[0])
-        printf("South: %g + %g,%g = %g,%g\n",
-                hcp[0], dp[0], dp2[0], hcp[0] + dp[0], hcp[0] +dp2[0]);
-    else
-        printf("South: %g + %g = %g\n", hcp[0], dp[0], hcp[0] + dp[0]);
+    printf("South: %g + %g = %g\n", hcp[0], dp[0], hcp[0] + dp[0]);
     for (suit=0; suit<4; suit++) {
         space(20);
         suit_show(hand[0], HAND_SIZE, suit);
