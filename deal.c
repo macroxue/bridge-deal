@@ -115,23 +115,34 @@ calculate_hcp(card_t *hand, int count)
 int
 calculate_dp(card_t *hand, int count, float dp_table[])
 {
-    int i, dp = 0, suit = 0, len = 0;
+    int i, suit, len[4], dp = 0;
+    for (suit = 0; suit < 4; suit ++) len[suit] = 0;
     for (i = 0; i < count; i ++) {
-        if (hand[i] / SUIT_SIZE == suit) {
-            len++;
-        } else {
-            dp += dp_table[len];
-            len = 0;
-            suit++;
-            i--;
+        int suit = hand[i] / SUIT_SIZE;
+        len[suit]++;
+    }
+    for (suit = 0; suit < 4; suit ++) dp += dp_table[len[suit]];
+    return dp;
+}
+
+float
+calculate_sp(card_t *hand, int count)
+{
+    int i, suit, len[4], sp = 0;
+    for (suit = 0; suit < 4; suit ++) len[suit] = 0;
+    for (i = 0; i < count; i ++) {
+        int suit = hand[i] / SUIT_SIZE;
+        len[suit]++;
+    }
+    for (i = 0; i < count; i++) {
+        int suit = hand[i] / SUIT_SIZE;
+        int rank = hand[i] % SUIT_SIZE;
+        int hcp = point_table[rank];
+        if (rank > 0 && hcp > 0 && len[suit] <= rank && len[suit] <= 2) {
+            ++sp;
         }
     }
-    while (suit < 4) {
-        dp += dp_table[len];
-        len = 0;
-        suit++;
-    }
-    return dp;
+    return sp;
 }
 
 /////// save deal in Deep Finesse format ///////
@@ -204,7 +215,7 @@ main(int argc, char *argv[])
     big_t index[4], total[4];
     int hands_to_show, arg_pos;
     int seat, suit, suit_len;
-    float hcp[4], dp[4];
+    float hcp[4], dp[4], sp[4];
 
     {
         struct timeval time;
@@ -255,11 +266,12 @@ main(int argc, char *argv[])
     for (seat = 0; seat < 4; seat++) {
         hcp[seat] = calculate_hcp(hand[seat], HAND_SIZE);
         dp[seat]  = calculate_dp(hand[seat], HAND_SIZE, dp_table);
+        sp[seat]  = calculate_sp(hand[seat], HAND_SIZE);
     }
 
     if (hands_to_show >= 2) {
         space(20);
-        printf("North: %g + %g = %g\n", hcp[1], dp[1], hcp[1] + dp[1]);
+        printf("North: %g+%g-%g=%g\n", hcp[1], dp[1], sp[1], hcp[1] + dp[1] - sp[1]);
         for (suit = 0; suit < 4; suit ++) {
             space(20);
             suit_show(hand[1], HAND_SIZE, suit);
@@ -269,10 +281,10 @@ main(int argc, char *argv[])
 
     if (hands_to_show >= 4) {
         char out[80];
-        sprintf(out, "West: %g + %g = %g", hcp[3], dp[3], hcp[3] + dp[3]);
+        sprintf(out, "West: %g+%g-%g=%g", hcp[3], dp[3], sp[3], hcp[3] + dp[3] - sp[3]);
         printf("%s", out);
         space(40 - strlen(out));
-        printf("East: %g + %g = %g\n", hcp[2], dp[2], hcp[2] + dp[2]);
+        printf("East: %g+%g-%g=%g\n", hcp[2], dp[2], sp[2], hcp[2] + dp[2] - sp[2]);
         for (suit=0; suit<4; suit++) {
             suit_len = suit_show(hand[3], HAND_SIZE, suit);
             space(center[suit].offset - suit_len);
@@ -287,7 +299,7 @@ main(int argc, char *argv[])
     if (hands_to_show >= 2)
         printf("\n");
     space(20);
-    printf("South: %g + %g = %g\n", hcp[0], dp[0], hcp[0] + dp[0]);
+    printf("South: %g+%g-%g=%g\n", hcp[0], dp[0], sp[0], hcp[0] + dp[0] - sp[0]);
     for (suit=0; suit<4; suit++) {
         space(20);
         suit_show(hand[0], HAND_SIZE, suit);
