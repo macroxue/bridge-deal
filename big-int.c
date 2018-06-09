@@ -1,3 +1,8 @@
+#include <assert.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
 //////////////////////////////////////////////////
 // BIG integer
 //////////////////////////////////////////////////
@@ -7,7 +12,7 @@
 
 typedef int big_t[BIG_SIZE];
 
-big_set(big_t r, int n)
+void big_set(big_t r, int n)
 {
     int i;
     assert(n < BASE);
@@ -15,7 +20,7 @@ big_set(big_t r, int n)
     r[0] = n;
 }
 
-big_add(big_t r, big_t m, big_t n)
+void big_add(big_t r, big_t m, big_t n)
 {
     int i, c = 0;
     for (i = 0; i < BIG_SIZE; i++) {
@@ -26,7 +31,7 @@ big_add(big_t r, big_t m, big_t n)
     assert(c == 0);
 }
 
-big_sub(big_t r, big_t m, big_t n)
+void big_sub(big_t r, big_t m, big_t n)
 {
     int i, c = 0;
     for (i = 0; i < BIG_SIZE; i++) {
@@ -51,7 +56,7 @@ big_cmp(big_t m, big_t n)
     else return 1;
 }
 
-big_mul_i(big_t r, big_t m, int n)
+void big_mul_i(big_t r, big_t m, int n)
 {
     int i, c = 0;
     assert(n < BASE);
@@ -63,7 +68,7 @@ big_mul_i(big_t r, big_t m, int n)
     assert(c == 0);
 }
 
-big_mul(big_t r, big_t m, big_t n)
+void big_mul(big_t r, big_t m, big_t n)
 {
     int i, j, c = 0;
 
@@ -83,7 +88,7 @@ big_mul(big_t r, big_t m, big_t n)
     assert(c == 0);
 }
 
-big_div_i(big_t r, big_t m, int n)
+void big_div_i(big_t r, big_t m, int n)
 {
     int i, c = 0, d;
     assert(n < BASE);
@@ -95,7 +100,7 @@ big_div_i(big_t r, big_t m, int n)
     assert(c == 0);
 }
 
-big_choose(big_t r, int m, int n)
+void big_choose(big_t r, int m, int n)
 {
     int i;
     big_set(r, 1);
@@ -105,7 +110,7 @@ big_choose(big_t r, int m, int n)
         big_div_i(r, r, i);
 }
 
-big_rand(big_t r, big_t t)
+void big_rand(big_t r, big_t t)
 {
     int i;
     for (i = BIG_SIZE-1; i >= 0 && t[i] == 0; i--);
@@ -120,7 +125,7 @@ big_rand(big_t r, big_t t)
     }
 }
 
-big_show(big_t r)
+void big_show(big_t r)
 {
     int i;
     for (i = BIG_SIZE - 1; i >= 0 && r[i] == 0; i--);
@@ -133,7 +138,7 @@ big_show(big_t r)
     }
 }
 
-big_read(big_t r, char *s)
+void big_read(big_t r, char *s)
 {
     int i, l;
 
