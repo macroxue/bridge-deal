@@ -13,7 +13,7 @@
 #define SUIT_SIZE  13
 typedef char card_t;
 
-char suit_sign[] = "SHDC";
+char* suit_sign[] = {"♠", "♥", "♦", "♣"};
 char rank_sign[] = "AKQJT98765432";
 char *seat_sign[] = { "North", "South", "West", "East" };
 float point_table[SUIT_SIZE] = {4,3,2,1,0,0,0,0,0,0,0,0,0};
@@ -58,7 +58,7 @@ int
 suit_show(card_t *card, int count, int suit)
 {
     int i, out_len = 3;
-    printf("%c: ", suit_sign[suit]);
+    printf("%s ", suit_sign[suit]);
     for (i = 0; i < count; i ++) {
         if (card[i] / SUIT_SIZE == suit) {
             printf("%c ", rank_sign[card[i] % SUIT_SIZE]);
