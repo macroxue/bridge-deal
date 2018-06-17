@@ -1,5 +1,5 @@
-#include "big-int.c"
 #include <vector>
+#include "big-int.c"
 
 char rank_sign[] = "AKQJT98765432";
 
@@ -10,8 +10,7 @@ int read_rank(char c) {
 
 int main(int argc, char *argv[]) {
   std::vector<int> deck;
-  for (int c = 0; c < 52; ++c)
-    deck.push_back(c);
+  for (int c = 0; c < 52; ++c) deck.push_back(c);
   for (int i = 1; i < argc; ++i) {
     int suit = 0;
     int hand_size = 13;
@@ -52,4 +51,5 @@ int main(int argc, char *argv[]) {
     }
   }
   puts("");
+  return 0;
 }
