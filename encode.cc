@@ -1,10 +1,11 @@
+#include <ctype.h>
 #include <vector>
 #include "big-int.c"
 
 char rank_sign[] = "AKQJT98765432";
 
 int read_rank(char c) {
-  auto pos = strchr(rank_sign, c);
+  auto pos = strchr(rank_sign, toupper(c));
   return pos ? pos - rank_sign : -1;
 }
 
