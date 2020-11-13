@@ -111,7 +111,7 @@ void show_hand_summary(int seat, card_t *hand, char *out) {
       ++sp;
     }
   }
-  sprintf(out, "%s: %g+%g-%g=%g, %d-%d-%d-%d", seat_sign[seat], hcp, dp, sp,
+  sprintf(out, "%s: %g+%g-%g=%g, %X%X%X%X", seat_sign[seat], hcp, dp, sp,
           hcp + dp - sp, len[0], len[1], len[2], len[3]);
 }
 
@@ -261,6 +261,6 @@ int main(int argc, char *argv[]) {
     printf("\n");
   }
 
-  //save_for_deep_finesse(hand);
+  save_for_deep_finesse(hand);
   return 0;
 }
